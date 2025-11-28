@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getSafeImageUrl } from "@/lib/imageUtils";
+import { appendPartnerTag } from "@/lib/amazonUtils";
 import type { Product } from "@/data/products";
 
 type ProductCollectionProps = {
@@ -12,12 +13,6 @@ type ProductCollectionProps = {
   viewAllLink?: string;
   layout?: "grid" | "featured";
 };
-
-function appendPartnerTag(url: string): string {
-  const partnerTag = process.env.AMAZON_PARTNER_TAG || "your-tag-20";
-  const separator = url.includes("?") ? "&" : "?";
-  return `${url}${separator}tag=${partnerTag}`;
-}
 
 export default function ProductCollection({
   title,

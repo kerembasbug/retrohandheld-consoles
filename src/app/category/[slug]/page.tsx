@@ -7,13 +7,8 @@ import Link from "next/link";
 import { getProductsByCategory, categories, seoCategories } from "@/data/products";
 import { seoCategories as seoCategoryList, mainCategories } from "@/data/categories";
 import { getSafeImageUrl } from "@/lib/imageUtils";
+import { appendPartnerTag } from "@/lib/amazonUtils";
 import type { Product } from "@/data/products";
-
-function appendPartnerTag(url: string): string {
-  const partnerTag = process.env.AMAZON_PARTNER_TAG || "your-tag-20";
-  const separator = url.includes("?") ? "&" : "?";
-  return `${url}${separator}tag=${partnerTag}`;
-}
 
 type FilterState = {
   category: string;

@@ -4,12 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProductByAsin, getProductsByCategory } from "@/data/products";
 import { getSafeImageUrl, isValidImageUrl } from "@/lib/imageUtils";
-
-function appendPartnerTag(url: string): string {
-  const partnerTag = process.env.AMAZON_PARTNER_TAG || "your-tag-20";
-  const separator = url.includes("?") ? "&" : "?";
-  return `${url}${separator}tag=${partnerTag}`;
-}
+import { appendPartnerTag } from "@/lib/amazonUtils";
 
 export async function generateMetadata({
   params,
