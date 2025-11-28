@@ -158,6 +158,20 @@ export default async function ProductPage({
               </p>
             </div>
 
+            {/* Product Description */}
+            {safeProduct.description && safeProduct.description !== 'N/A' && (
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  About This Product
+                </h2>
+                <div className="prose max-w-none text-gray-700 leading-relaxed">
+                  <p className="text-base whitespace-pre-line">
+                    {safeProduct.description}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Key Features */}
             {safeProduct.features.length > 0 && (
               <div className="mb-6">
