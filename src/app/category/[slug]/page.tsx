@@ -7,7 +7,6 @@ import Link from "next/link";
 import { getProductsByCategory, categories, seoCategories } from "@/data/products";
 import { seoCategories as seoCategoryList, mainCategories } from "@/data/categories";
 import { getSafeImageUrl } from "@/lib/imageUtils";
-import ProductFilters from "@/components/ProductFilters";
 import type { Product } from "@/data/products";
 
 function appendPartnerTag(url: string): string {
@@ -76,6 +75,7 @@ export default function CategoryPage() {
   const filteredProducts = useMemo(() => {
     let filtered = [...allCategoryProducts];
 
+    // Category filter - skip in category page (we're already on a category)
     // Brand filter
     if (filters.brand) {
       filtered = filtered.filter(p => p.brand === filters.brand);
@@ -194,14 +194,119 @@ export default function CategoryPage() {
         </div>
 
         {/* Filters */}
-        <ProductFilters
-          products={allCategoryProducts}
-          filteredProducts={filteredProducts}
-          filters={filters}
-          onFiltersChange={setFilters}
-          categories={availableCategories}
-          brands={availableBrands}
-        />
+        <div className="mb-8">
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">Filter Products</h2>
+              {(filters.brand || filters.minPrice || filters.maxPrice || filters.minRating || filters.minReviews) && (
+                <button
+                  onClick={() => setFilters({
+                    category: '',
+                    brand: '',
+                    minPrice: '',
+                    maxPrice: '',
+                    minRating: '',
+                    minReviews: '',
+                    sortBy: 'rating',
+                  })}
+                  className="text-sm text-blue-600 hover:text-blue-800 font-semibold"
+                >
+                  Clear All
+                </button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Brand Filter */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Brand
+                </label>
+                <select
+                  value={filters.brand}
+                  onChange={(e) => setFilters({ ...filters, brand: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">All Brands</option>
+                  {availableBrands.map((brand) => (
+                    <option key={brand} value={brand}>
+                      {brand}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Price Range */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Price Range
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    placeholder="Min $"
+                    value={filters.minPrice}
+                    onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
+                    className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    min="0"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Max $"
+                    value={filters.maxPrice}
+                    onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+                    className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    min="0"
+                  />
+                </div>
+              </div>
+
+              {/* Min Rating */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Minimum Rating
+                </label>
+                <select
+                  value={filters.minRating}
+                  onChange={(e) => setFilters({ ...filters, minRating: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">Any Rating</option>
+                  <option value="4.5">4.5+ ⭐</option>
+                  <option value="4.0">4.0+ ⭐</option>
+                  <option value="3.5">3.5+ ⭐</option>
+                  <option value="3.0">3.0+ ⭐</option>
+                </select>
+              </div>
+
+              {/* Sort By */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Sort By
+                </label>
+                <select
+                  value={filters.sortBy}
+                  onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as FilterState['sortBy'] })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="rating">Highest Rated</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="reviews">Most Reviews</option>
+                  <option value="name">Name A-Z</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Results Count */}
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <p className="text-sm text-gray-600">
+                Showing <span className="font-bold text-blue-600">{filteredProducts.length}</span> of{' '}
+                <span className="font-bold">{allCategoryProducts.length}</span> products
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Products Grid */}
         {filteredProducts.length > 0 ? (
